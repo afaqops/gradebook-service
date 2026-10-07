@@ -274,7 +274,17 @@ def main(argv: list[str] = sys.argv) -> None:
     port = 8000
 
     if len(argv) > 1:
-        port = int(argv[1])
+        try:
+            port = int(argv[1])
+        except ValueError as exc:
+            raise SystemExit(
+                "port must be a whole number from 1 to 65535"
+            ) from exc
+
+    if not 1 <= port <= 65535:
+        raise SystemExit(
+            "port must be a whole number from 1 to 65535"
+        )
 
     logger.info("gradebook on %s", port)
 
