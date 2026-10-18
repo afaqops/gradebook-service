@@ -1,3 +1,4 @@
+
 # gradebook.py -- the department gradebook service
 
 import http.server
@@ -73,6 +74,36 @@ def pct(sid: str) -> str:
         return "0"
 
     return str(round(got, 2))
+
+
+def add_mark(payload: object) -> None:
+    mark = parse_mark(payload)
+
+    if mark.student not in STATE["students"]:
+        raise NotFoundError("Student not found.")
+
+    if mark.assessment not in STATE["assessments"]:
+        raise NotFoundError("Assessment not found.")
+
+    assessment = STATE["assessments"][mark.assessment]
+    assessment_total = float(assessment["total"])
+
+    if mark.score > assessment_total:
+        raise ValidationError(
+            "score must not be greater than assessment total."
+        )
+
+    record = asdict(mark)
+    record["at"] = str(datetime.now(timezone.utc))
+
+    STATE["marks"].append(record)
+    save()
+
+    logger.info(
+        "recorded mark for %s score %s",
+        mark.student,
+        mark.score,
+    )
 
 
 class Handler(http.server.BaseHTTPRequestHandler):
@@ -195,34 +226,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
         return 200, record
 
     def create_mark(self, payload: object) -> tuple[int, object]:
-        mark = parse_mark(payload)
-
-        if mark.student not in STATE["students"]:
-            raise NotFoundError("Student not found.")
-
-        if mark.assessment not in STATE["assessments"]:
-            raise NotFoundError("Assessment not found.")
-
-        assessment = STATE["assessments"][mark.assessment]
-        assessment_total = float(assessment["total"])
-
-        if mark.score > assessment_total:
-            raise ValidationError(
-                "score must not be greater than assessment total."
-            )
-
-        record = asdict(mark)
-        record["at"] = str(datetime.now(timezone.utc))
-
-        STATE["marks"].append(record)
-        save()
-
-        logger.info(
-            "recorded mark for %s score %s",
-            mark.student,
-            mark.score,
-        )
-
+        add_mark(payload)
         return 200, {"ok": True}
 
     def post_request(self) -> tuple[int, object]:
