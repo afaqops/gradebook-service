@@ -147,3 +147,12 @@ Tests covered:
 - Missing required fields are rejected.
 - Non-dictionary payloads are rejected.
 - Valid assessments are parsed correctly.
+
+
+
+
+## Lab 05 — Task 1: Initial Coverage
+
+- Total coverage: 53%
+- File with the lowest coverage: gradebook.py (42%)
+
