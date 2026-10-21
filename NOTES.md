@@ -162,3 +162,9 @@ Tests covered:
 - RED: Test initially failed during collection because ensure_weight_fits could not be imported.
 - GREEN: Added a minimal implementation using pass.
 - Result: 1 test passed.
+
+### Task 2 — Cycle 2: Reject weights above 100
+
+- RED: Added a test expecting `ValidationError` when the new weight makes the total exceed 100. The test failed because the function did not raise the exception.
+- GREEN: Updated `ensure_weight_fits` to raise `ValidationError` when the combined weight exceeds 100.
+- Result: 2 tests passed.
