@@ -86,3 +86,29 @@ def test_add_mark_calls_save_once(loaded, monkeypatch):
 
     assert calls == ["saved"]
 
+
+def test_add_mark_replaces_previous_mark_for_same_assessment(
+    loaded, monkeypatch
+):
+    monkeypatch.setattr(gradebook, "save", lambda: None)
+
+    gradebook.add_mark({
+        "student": "S1",
+        "assessment": "A1",
+        "score": 5,
+    })
+    gradebook.add_mark({
+        "student": "S1",
+        "assessment": "A1",
+        "score": 18,
+    })
+
+    marks = [
+        mark for mark in loaded["marks"]
+        if mark["student"] == "S1"
+        and mark["assessment"] == "A1"
+    ]
+
+    assert len(marks) == 1
+    assert marks[0]["score"] == 18
+

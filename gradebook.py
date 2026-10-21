@@ -12,6 +12,7 @@ from typing import Any
 
 from errors import ConflictError, GradebookError, NotFoundError, ValidationError
 from models import parse_assessment, parse_mark, parse_student
+from rules import ensure_weight_fits
 
 DATA = "gradebook.json"
 
@@ -41,6 +42,39 @@ def load() -> None:
 def save() -> None:
     with open(DATA, "w") as f:
         json.dump(STATE, f, indent=2)
+
+
+def add_assessment(
+    state: dict[str, Any],
+    assessment: Any,
+    save_callback: Callable[[], None],
+) -> None:
+    """Validate, store, and save a new assessment."""
+
+    assessments = state["assessments"]
+
+    if assessment.id in assessments:
+        raise ConflictError("Assessment already exists.")
+
+    existing_weights = [
+        float(item["weight"])
+        for item in assessments.values()
+    ]
+
+    ensure_weight_fits(
+        existing_weights,
+        float(assessment.weight),
+    )
+
+    record = asdict(assessment)
+    assessments[assessment.id] = record
+    save_callback()
+
+    logger.info(
+        "added assessment %s: %s",
+        assessment.id,
+        assessment.title,
+    )
 
 
 def pct(sid: str) -> str:
@@ -79,6 +113,7 @@ def pct(sid: str) -> str:
 def add_mark(payload: object) -> None:
     mark = parse_mark(payload)
 
+    # Validate references before changing state.
     if mark.student not in STATE["students"]:
         raise NotFoundError("Student not found.")
 
@@ -88,10 +123,23 @@ def add_mark(payload: object) -> None:
     assessment = STATE["assessments"][mark.assessment]
     assessment_total = float(assessment["total"])
 
+    if mark.score < 0:
+        raise ValidationError("score must not be negative.")
+
     if mark.score > assessment_total:
         raise ValidationError(
             "score must not be greater than assessment total."
         )
+
+    # Replace the previous mark for this student and assessment.
+    STATE["marks"][:] = [
+        existing
+        for existing in STATE["marks"]
+        if not (
+            existing.get("student") == mark.student
+            and existing.get("assessment") == mark.assessment
+        )
+    ]
 
     record = asdict(mark)
     record["at"] = str(datetime.now(timezone.utc))
@@ -215,15 +263,9 @@ class Handler(http.server.BaseHTTPRequestHandler):
     def create_assessment(self, payload: object) -> tuple[int, object]:
         assessment = parse_assessment(payload)
 
-        if assessment.id in STATE["assessments"]:
-            raise ConflictError("Assessment already exists.")
+        add_assessment(STATE, assessment, save)
 
-        record = asdict(assessment)
-
-        STATE["assessments"][assessment.id] = record
-        save()
-
-        return 200, record
+        return 200, STATE["assessments"][assessment.id]
 
     def create_mark(self, payload: object) -> tuple[int, object]:
         add_mark(payload)

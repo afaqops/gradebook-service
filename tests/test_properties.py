@@ -6,10 +6,7 @@ from hypothesis import given, strategies as st
 
 import gradebook
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="duplicate marks are all counted",
-)
+
 
 @given(
     scores=st.lists(
