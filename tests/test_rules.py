@@ -38,3 +38,6 @@ def test_weight_that_exceeds_100_is_rejected():
 
 def test_weight_total_of_100_fits():
     ensure_weight_fits([60], 40)
+
+def test_decimal_weights_that_total_100_fit():
+    ensure_weight_fits([9.3, 27.3, 33.7], 29.7)
