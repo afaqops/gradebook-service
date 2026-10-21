@@ -170,3 +170,6 @@ Tests covered:
 - Result: 2 tests passed.
 
 Coverage showed which lines of the code were executed by the tests, including most of pct(). It could not tell me whether the tests checked the correctness of the calculation; for example, get_report() has no direct test
+
+add_mark() appends every mark for the same student and assessment instead of replacing the previous mark.
+pct() counts all those marks, so the calculated percentage can exceed the assessment's weight.
