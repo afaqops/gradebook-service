@@ -156,3 +156,9 @@ Tests covered:
 - Total coverage: 53%
 - File with the lowest coverage: gradebook.py (42%)
 
+
+### Task 2 — Cycle 1: ensure_weight_fits
+
+- RED: Test initially failed during collection because ensure_weight_fits could not be imported.
+- GREEN: Added a minimal implementation using pass.
+- Result: 1 test passed.
