@@ -34,3 +34,7 @@ def test_empty_weights_with_new_weight_of_50_fits():
 def test_weight_that_exceeds_100_is_rejected():
     with pytest.raises(ValidationError):
         ensure_weight_fits([], 101)
+
+
+def test_weight_total_of_100_fits():
+    ensure_weight_fits([60], 40)
