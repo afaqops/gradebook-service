@@ -168,3 +168,5 @@ Tests covered:
 - RED: Added a test expecting `ValidationError` when the new weight makes the total exceed 100. The test failed because the function did not raise the exception.
 - GREEN: Updated `ensure_weight_fits` to raise `ValidationError` when the combined weight exceeds 100.
 - Result: 2 tests passed.
+
+Coverage showed which lines of the code were executed by the tests, including most of pct(). It could not tell me whether the tests checked the correctness of the calculation; for example, get_report() has no direct test
