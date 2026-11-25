@@ -115,6 +115,7 @@ def pct(sid: str) -> str:
 def add_mark(payload: object) -> None:
     mark = parse_mark(payload)
 
+    # All checks come first, so a rejected mark leaves no trace.
     # Validate references before changing state.
     if mark.student not in STATE["students"]:
         raise NotFoundError("Student not found.")
