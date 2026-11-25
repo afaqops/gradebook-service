@@ -86,15 +86,15 @@ def pct(sid: str) -> str:
             continue
 
         assessment_id = mark.get("assessment")
-        assessment = STATE["assessments"].get(assessment_id)
+        a = STATE["assessments"].get(assessment_id)
 
-        if not assessment:
+        if not a:
             continue
 
         try:
             score = float(mark.get("score", 0))
-            weight = float(assessment.get("weight", 0))
-            assessment_total = float(assessment.get("total", 100))
+            weight = float(a.get("weight", 0))
+            assessment_total = float(a.get("total", 100))
         except (ValueError, TypeError):
             continue
 
@@ -200,13 +200,13 @@ class Handler(http.server.BaseHTTPRequestHandler):
         content_length = self.headers.get("Content-Length", "0")
 
         try:
-            length = int(content_length)
+            n = int(content_length)
         except ValueError as exc:
             raise ValidationError(
                 "Content-Length must be a valid number."
             ) from exc
 
-        raw = self.rfile.read(length)
+        raw = self.rfile.read(n)
 
         try:
             return json.loads(raw)
