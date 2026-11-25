@@ -200,13 +200,13 @@ class Handler(http.server.BaseHTTPRequestHandler):
         content_length = self.headers.get("Content-Length", "0")
 
         try:
-            n = int(content_length)
+            length = int(content_length)
         except ValueError as exc:
             raise ValidationError(
                 "Content-Length must be a valid number."
             ) from exc
 
-        raw = self.rfile.read(n)
+        raw = self.rfile.read(length)
 
         try:
             return json.loads(raw)
