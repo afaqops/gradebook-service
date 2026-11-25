@@ -293,7 +293,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self._run(self.get_students)
 
         elif self.path.startswith("/students/"):
-            sid = self.path.split("/")[2]
+            sid = self.path.removeprefix("/students/")
             self._run(lambda: self.get_student(sid))
 
         elif self.path == "/assessments":
