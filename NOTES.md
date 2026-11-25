@@ -2,6 +2,7 @@
 
 | Bug | Cause | Fix | Test |
 | --- | --- | --- | --- |
+| A: Opening `/students/S1/` says not found (404) | In commit `a9c3ab9`, `self.path.split("/")[2]` was changed to `self.path.removeprefix("/students/")`, which left trailing slashes (`S1/`) and query parameters (`S1?format=json`) in the extracted ID | Parse student ID ignoring query parameters and trailing slashes: `self.path.removeprefix("/students/").split("?")[0].rstrip("/")` | `tests/test_http.py::test_get_student_handles_trailing_slash_and_query` |
 
 ## Previous Lab Notes
 
