@@ -222,7 +222,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
         try:
             return json.loads(raw)
-        except json.JSONDecodeError as exc:
+        except ValueError as exc:
             raise ValidationError("Invalid JSON.") from exc
 
     # GET operations

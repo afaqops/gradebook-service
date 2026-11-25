@@ -39,3 +39,8 @@ def send(
 def test_get_student_handles_trailing_slash_and_query(port: int, path: str) -> None:
     status, _ = send(port, "GET", path)
     assert status == 200
+
+
+def test_body_that_is_not_utf8_is_a_bad_request(port: int) -> None:
+    status, _ = send(port, "POST", "/students", body=b"\x80\x81\x82")
+    assert status == 400
