@@ -88,15 +88,15 @@ def pct(sid: str) -> str:
             continue
 
         assessment_id = mark.get("assessment")
-        a = STATE["assessments"].get(assessment_id)
+        assessment = STATE["assessments"].get(assessment_id)
 
-        if not a:
+        if not assessment:
             continue
 
         try:
             score = float(mark.get("score", 0))
-            weight = float(a.get("weight", 0))
-            assessment_total = float(a.get("total", 100))
+            weight = float(assessment.get("weight", 0))
+            assessment_total = float(assessment.get("total", 100))
         except (ValueError, TypeError):
             continue
 
