@@ -7,7 +7,7 @@ import logging
 import sys
 from collections.abc import Callable
 from dataclasses import asdict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from errors import ConflictError, GradebookError, NotFoundError, ValidationError
@@ -154,7 +154,7 @@ def add_mark(payload: object) -> None:
     ]
 
     record = asdict(mark)
-    record["at"] = str(datetime.now(timezone.utc))
+    record["at"] = str(datetime.now(UTC))
 
     STATE["marks"].append(record)
     save()
@@ -265,7 +265,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
             raise ConflictError("Student already exists.")
 
         record = asdict(student)
-        record["joined"] = str(datetime.now(timezone.utc))
+        record["joined"] = str(datetime.now(UTC))
 
         STATE["students"][student.id] = record
         save()

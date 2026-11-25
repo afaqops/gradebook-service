@@ -1,9 +1,9 @@
 
 import pytest
 
+import gradebook
 from errors import ValidationError
 from models import Assessment
-import gradebook
 
 
 @pytest.mark.parametrize("weight", [0, 100])

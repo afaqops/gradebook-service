@@ -1,6 +1,8 @@
 import math
 from dataclasses import dataclass
+
 from errors import ValidationError
+
 
 @dataclass(frozen=True)
 class Student:
