@@ -15,6 +15,7 @@ from models import parse_assessment, parse_mark, parse_student
 from rules import ensure_weight_fits
 
 DATA = "gradebook.json"
+DEFAULT_PORT = 8000
 
 STATE: dict[str, Any] = {
     "students": {},
@@ -318,7 +319,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
 def main(argv: list[str] = sys.argv) -> None:
     load()
 
-    port = 8000
+    port = DEFAULT_PORT
 
     if len(argv) > 1:
         try:
