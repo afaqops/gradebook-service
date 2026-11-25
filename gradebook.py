@@ -78,6 +78,7 @@ def add_assessment(
 
 
 def pct(sid: str) -> str:
+    """Calculate the weighted percentage grade for a student."""
     total = 0.0
     got = 0.0
 
