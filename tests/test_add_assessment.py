@@ -51,3 +51,14 @@ def test_add_assessment_rejects_duplicate_id(state):
         gradebook.add_assessment(state, assessment, save)
 
     save.assert_not_called()
+
+
+def test_failed_save_leaves_no_trace(state):
+    def failing_save():
+        raise OSError("disk full")
+
+    assessment = Assessment("A3", "Final", 10.0, 50.0)
+    with pytest.raises(OSError):
+        gradebook.add_assessment(state, assessment, failing_save)
+
+    assert "A3" not in state["assessments"]

@@ -24,6 +24,7 @@ STATE: dict[str, Any] = {
 }
 
 logger = logging.getLogger(__name__)
+log = logger
 
 
 def load() -> None:
@@ -69,7 +70,15 @@ def add_assessment(
 
     record = asdict(assessment)
     assessments[assessment.id] = record
-    save_callback()
+    try:
+        save_callback()
+    except Exception:
+        del assessments[assessment.id]
+        log.warning(
+            "could not save assessment %s; change rolled back",
+            assessment.id,
+        )
+        raise
 
     logger.info(
         "added assessment %s: %s",
